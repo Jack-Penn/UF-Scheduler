@@ -9,32 +9,35 @@ import { arrayIntersection } from "./utils.js";
 export async function createSchedules(classes) {
   //Fetches Data for All Classes
   let allClassSections = {};
+  //awaits all class data to be found
   await Promise.all(
-    //waits for all class data to be found
     classes.map(async (classCode) => {
       allClassSections[classCode] = [];
       const classDataResults = await searchClassCode(classCode);
-      classDataResults.forEach((course) => {
-        const courseData = {
-          ...course,
-          sections: undefined,
-        };
-        course.sections.forEach((section) =>
-          allClassSections[classCode].push(
-            // More Simple Testing Section Object
-            // {
-            //   name: course.name,
-            //   number: section.number,
-            //   bitmask: timeslotBitmask(section.meetTimes),
-            // }
-            {
-              course: courseData,
-              ...section,
-              bitmask: timeslotBitmask(section.meetTimes),
-            }
-          )
-        );
-      });
+      await Promise.all(
+        classDataResults.map(async (course) => {
+          const courseData = {
+            ...course,
+            sections: undefined,
+          };
+          await Promise.all(
+            course.sections.map(async (section) => {
+              const instructors = await Promise.all(
+                section.instructors.map(async ({ name }) => ({
+                  name,
+                  rating: await searchRateMyProfessor(name),
+                }))
+              );
+              allClassSections[classCode].push({
+                course: courseData,
+                ...section,
+                instructors,
+                bitmask: timeslotBitmask(section.meetTimes),
+              });
+            })
+          );
+        })
+      );
     })
   );
 
@@ -78,6 +81,9 @@ export async function createSchedules(classes) {
     }
   }
   bronKerbosch([], g, []);
+
+  //removes neighbor data from section objects
+  classes.forEach((classCode) => allClassSections[classCode].forEach((section) => delete section.neighbors));
 
   //creates schedule objects from clique
   const schedules = cliques
@@ -127,8 +133,16 @@ export async function searchClassCode(courseCode) {
   });
 }
 
+export async function getClassFilters() {
+  axios.get("https://one.uf.edu/apix/soc/filters").then(console.log(res));
+}
 
+//TODO: check if memoization works
+let searchRateMyProfessorMemoization = {};
 export async function searchRateMyProfessor(teacherQuery) {
+  if (searchRateMyProfessorMemoization.hasOwnProperty(teacherQuery)) {
+    return searchRateMyProfessorMemoization[teacherQuery];
+  }
   const UF_SCHOOL_CODE = 1100;
   const data = JSON.stringify({
     query: `query TeacherSearchResultsPageQuery(
@@ -221,17 +235,21 @@ fragment TeacherBookmark_teacher on Teacher {
     data,
   };
 
-  return await axios
+  searchRateMyProfessorMemoization[teacherQuery] = await axios
     .request(config)
     .then(({ data: { data } }) => {
       const teacherData = data.search.teachers.edges[0].node;
-      return {
-        ...teacherData,
-        fullName: `${teacherData.firstName} ${teacherData.lastName}`,
-        pageUrl: `https://www.ratemyprofessors.com/professor/${teacherData.legacyId}`,
-      };
+      if (arrayIntersection(teacherQuery.split(" "), [teacherData.firstName, teacherData.lastName]).length > 1) {
+        return {
+          ...teacherData,
+          pageUrl: `https://www.ratemyprofessors.com/professor/${teacherData.legacyId}`,
+        };
+      } else {
+        return null;
+      }
     })
     .catch((error) => {
       console.log(error);
     });
+  return searchRateMyProfessorMemoization[teacherQuery];
 }
