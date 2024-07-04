@@ -121,3 +121,112 @@ async function searchClassCode(courseCode) {
     term: 2248,
   });
 }
+searchRateMyProfessor("Sollenberger").then(console.log);
+
+async function searchRateMyProfessor(teacherQuery) {
+  const UF_SCHOOL_CODE = 1100;
+  const data = JSON.stringify({
+    query: `query TeacherSearchResultsPageQuery(
+  $query: TeacherSearchQuery!
+  $schoolID: ID
+  $includeSchoolFilter: Boolean!
+) {
+  search: newSearch {
+    ...TeacherSearchPagination_search_1ZLmLD
+  }
+  school: node(id: $schoolID) @include(if: $includeSchoolFilter) {
+    __typename
+    ... on School {
+      name
+    }
+    id
+  }
+}
+fragment TeacherSearchPagination_search_1ZLmLD on newSearch {
+  teachers(query: $query, first: 8, after: "") {
+    didFallback
+    edges {
+      cursor
+      node {
+        ...TeacherCard_teacher
+        id
+        __typename
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    resultCount
+    filters {
+      field
+      options {
+        value
+        id
+      }
+    }
+  }
+}
+fragment TeacherCard_teacher on Teacher {
+  id
+  legacyId
+  avgRating
+  numRatings
+  ...CardFeedback_teacher
+  ...CardSchool_teacher
+  ...CardName_teacher
+  ...TeacherBookmark_teacher
+}
+fragment CardFeedback_teacher on Teacher {
+  wouldTakeAgainPercent
+  avgDifficulty
+}
+fragment CardSchool_teacher on Teacher {
+  department
+  school {
+    name
+    id
+  }
+}
+fragment CardName_teacher on Teacher {
+  firstName
+  lastName
+}
+fragment TeacherBookmark_teacher on Teacher {
+  id
+  isSaved
+}`,
+    variables: {
+      query: { text: teacherQuery, schoolID: "U2Nob29sLTExMDA=", fallback: true, departmentID: null },
+      schoolID: "U2Nob29sLTExMDA=",
+      includeSchoolFilter: true,
+    },
+  });
+
+  let config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "https://www.ratemyprofessors.com/graphql",
+    headers: {
+      Authorization: "Basic dGVzdDp0ZXN0",
+      Origin: "https://www.ratemyprofessors.com",
+      Referer: `https://www.ratemyprofessors.com/search/professors/${UF_SCHOOL_CODE}?q=${teacherQuery}`,
+      "Content-Type": "application/json",
+    },
+    data,
+  };
+
+  return await axios
+    .request(config)
+    .then(({ data: { data } }) => {
+      const teacherData = data.search.teachers.edges[0].node;
+      return {
+        ...teacherData,
+        fullName: `${teacherData.firstName} ${teacherData.lastName}`,
+        pageUrl: `https://www.ratemyprofessors.com/professor/${teacherData.legacyId}`,
+      };
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
