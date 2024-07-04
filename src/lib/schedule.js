@@ -6,10 +6,7 @@ import axios from "axios";
 import { Bitmask, timeslotBitmask } from "./bitmask.js";
 import { arrayIntersection } from "./utils.js";
 
-const myClasses = ["EEL3000", "EGS1006", "HUM2930", "MAC3474"];
-createSchedules(myClasses);
-
-async function createSchedules(classes) {
+export async function createSchedules(classes) {
   //Fetches Data for All Classes
   let allClassSections = {};
   await Promise.all(
@@ -61,17 +58,21 @@ async function createSchedules(classes) {
     });
   }
 
+  //TODO: possiblly implement BK pivoting
+  //https://www.youtube.com/watch?v=j_uQChgo72I
   let cliques = [];
   function bronKerbosch(r, p, x) {
     //r is current clique, p is potential nodes, x is excluded nodes
     if (p.length === 0 && x.length === 0) {
-      //BK branch end condition
+      //branch end condition
+      //x condition prevents duplicate cliques
       cliques.push(r);
     }
 
+    //iterates through all nodes in p
     while (p.length > 0) {
-      //used to iterate through all nodes in p
       const v = p.shift();
+      //recursively compounding set AND opperations ensures subsequent nodes are part of current clique
       bronKerbosch([...r, v], arrayIntersection(p, v.neighbors), arrayIntersection(x, v.neighbors));
       x.push(v);
     }
@@ -86,8 +87,9 @@ async function createSchedules(classes) {
       bitmask: classes.reduce((total, section) => total.OR(section.bitmask), new Bitmask(55)),
       id: classes.reduce((total, section) => total + parseInt(section.classNumber) ** 2, 0),
     }))
-    .sort((sch1, sch2) => sch1.credits - sch2.credits); //sorts by credits in ascending order
+    .sort((sch1, sch2) => sch2.credits - sch1.credits); //sorts by credits in descending order
 
+  /*
   console.log(
     schedules
       .map(
@@ -105,25 +107,28 @@ async function createSchedules(classes) {
       )
       .join("\n\n")
   );
+  */
+
+  return schedules;
 }
 
-async function searchClassParams(params) {
+export async function searchClassParams(params) {
   return await axios
     .get("https://one.uf.edu/apix/soc/schedule", {
       params,
     })
     .then(({ data }) => data[0].COURSES);
 }
-async function searchClassCode(courseCode) {
+export async function searchClassCode(courseCode) {
   return await searchClassParams({
     category: "CWSP",
     "course-code": courseCode,
     term: 2248,
   });
 }
-searchRateMyProfessor("Sollenberger").then(console.log);
 
-async function searchRateMyProfessor(teacherQuery) {
+
+export async function searchRateMyProfessor(teacherQuery) {
   const UF_SCHOOL_CODE = 1100;
   const data = JSON.stringify({
     query: `query TeacherSearchResultsPageQuery(
