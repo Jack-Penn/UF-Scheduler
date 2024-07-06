@@ -19,11 +19,91 @@ const Schedule = ({ data: { id, credits, classes } }) => {
         Schedule #{id} ({credits} credits)
       </h1>
 
-      <div>
+      <WeekCalendar classes={classes} />
+
+      {/* <div>
         {classes.map((classData) => (
           <ClassCard key={`${classData.classNumber}`} data={classData} />
         ))}
-      </div>
+      </div> */}
+    </div>
+  );
+};
+
+const WeekCalendar = ({ classes }) => {
+  let minPeriod = 11;
+  let maxPeriod = 1;
+  classes.forEach((section) =>
+    section.meetTimes.forEach(({ meetPeriodBegin, meetPeriodEnd }) => {
+      console.log(meetPeriodBegin, meetPeriodEnd);
+      minPeriod = Math.min(minPeriod, parseInt(meetPeriodBegin));
+      maxPeriod = Math.max(maxPeriod, parseInt(meetPeriodEnd));
+    })
+  );
+  const periods = maxPeriod - minPeriod + 1;
+  return (
+    <div className="grid m-2 max-w-[1000px] border-gray-500 border-dashed border-r-[1px] border-b-[1px]">
+      {["MON", "TUE", "WED", "THU", "FRI"].map((dayLable, i) => (
+        <div
+          className="text-center bg-gray-800 row-start-1 border-gray-500 border-l-[1px] border-dashed"
+          style={{ gridColumnStart: i + 2 }}
+        >
+          {dayLable}
+        </div>
+      ))}
+
+      {Array(periods)
+        .fill(0)
+        .map((_, i) => (
+          <div
+            className="bg-gray-800 col-start-1 text-center align-middle flex items-center justify-center border-gray-500 border-t-[1px] border-dashed min-h-14"
+            style={{ gridRowStart: i + 2 }}
+          >
+            {minPeriod + i}
+          </div>
+        ))}
+
+      {classes.reduce(
+        (arr, section) => [
+          ...arr,
+          ...section.meetTimes.map((meetTime) =>
+            meetTime.meetDays.map((dayLetter) => (
+              <div
+                className=" bg-black/45 border-slate-500 p-1 border-[1px] border-l-8"
+                style={{
+                  borderLeftColor: section.color,
+                  gridColumnStart: ["M", "T", "W", "R", "F"].indexOf(dayLetter) + 2,
+                  gridRowStart: parseInt(meetTime.meetPeriodBegin) - minPeriod + 2,
+                  gridRowEnd: parseInt(meetTime.meetPeriodEnd) - minPeriod + 3,
+                }}
+              >
+                <p>
+                  <span className="font-bold">{section.course.code}</span> <span>#{section.classNumber}</span>
+                </p>
+                <p>
+                  {meetTime.meetTimeBegin} - {meetTime.meetTimeEnd}
+                </p>
+                <p>
+                  {meetTime.meetBldgCode == "WEB" ? (
+                    <span className="border-dotted border-b-[1px]">WEB</span>
+                  ) : meetTime.meetBldgCode ? (
+                    <a
+                      className="underline"
+                      href={`http://campusmap.ufl.edu/?loc=${meetTime.meetBldgCode}`}
+                      target="_blank"
+                    >
+                      {meetTime.meetBuilding} {meetTime.meetRoom}
+                    </a>
+                  ) : (
+                    <span className="border-dotted border-b-[1px]">TBA</span>
+                  )}
+                </p>
+              </div>
+            ))
+          ),
+        ],
+        []
+      )}
     </div>
   );
 };
