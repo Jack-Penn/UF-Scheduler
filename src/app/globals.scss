@@ -21,6 +21,23 @@ body {
   background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }
 
+.link {
+  text-decoration: none;
+  position: relative;
+  margin-bottom: 0.25rem;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    left: 0;
+    height: 3px;
+    border-radius: 2px;
+    background-image: linear-gradient(111.3deg, #9c27b0 9.6%, #00bcd4 93.6%);
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;

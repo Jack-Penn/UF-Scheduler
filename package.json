@@ -13,6 +13,7 @@
     "next": "14.2.4",
     "react": "^18",
     "react-dom": "^18",
+    "sass": "^1.77.6",
     "string-to-color": "^2.2.2"
   },
   "devDependencies": {

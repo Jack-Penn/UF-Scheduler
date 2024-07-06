@@ -77,24 +77,21 @@ const WeekCalendar = ({ classes }) => {
                 }}
               >
                 <p>
-                  <span className="font-bold">{section.course.code}</span> <span>#{section.classNumber}</span>
+                  <span className="font-bold">{section.course.code}</span>{" "}
+                  <span className=" font-light text-s">#{section.classNumber}</span>
                 </p>
                 <p>
                   {meetTime.meetTimeBegin} - {meetTime.meetTimeEnd}
                 </p>
-                <p>
+                <p className="">
                   {meetTime.meetBldgCode == "WEB" ? (
-                    <span className="border-dotted border-b-[1px]">WEB</span>
+                    <span className="">🖥️Online</span>
                   ) : meetTime.meetBldgCode ? (
-                    <a
-                      className="underline"
-                      href={`http://campusmap.ufl.edu/?loc=${meetTime.meetBldgCode}`}
-                      target="_blank"
-                    >
-                      {meetTime.meetBuilding} {meetTime.meetRoom}
+                    <a className="link" href={`http://campusmap.ufl.edu/?loc=${meetTime.meetBldgCode}`} target="_blank">
+                      📍{meetTime.meetBuilding} {meetTime.meetRoom}
                     </a>
                   ) : (
-                    <span className="border-dotted border-b-[1px]">TBA</span>
+                    <span className="">❓TBA</span>
                   )}
                 </p>
               </div>
