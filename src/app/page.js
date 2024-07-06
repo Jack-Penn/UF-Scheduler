@@ -1,4 +1,4 @@
-import { createSchedules, searchRateMyProfessor } from "@/lib/schedule";
+import { createSchedules } from "@/lib/schedule";
 
 export default async function Home() {
   const schedules = await createSchedules(["EEL3000", "EGS1006", "HUM2930", "MAC3474", "REL2240"]);
@@ -14,8 +14,8 @@ export default async function Home() {
 
 const Schedule = ({ data: { id, credits, classes } }) => {
   return (
-    <div className="m-3 p-2 bg-slate-800/35">
-      <h1 className=" text-3xl">
+    <div className="m-3 p-2 bg-slate-950">
+      <h1 className="p-2 text-3xl">
         Schedule #{id} ({credits} credits)
       </h1>
 
@@ -110,6 +110,7 @@ const WeekCalendar = ({ classes }) => {
 
 const ClassCard = async ({
   data: {
+    color,
     instructors,
     credits,
     classNumber,
@@ -118,7 +119,7 @@ const ClassCard = async ({
   },
 }) => {
   return (
-    <div className=" p-2 m-2 rounded border-slate-500 border-[1px] border-l-8">
+    <div className=" p-2 m-2 rounded border-slate-500 border-[1px]  border-l-8" style={{ borderLeftColor: color }}>
       <h1 className=" font-bold">
         {code} - {name}
       </h1>

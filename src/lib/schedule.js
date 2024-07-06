@@ -6,6 +6,8 @@ import axios from "axios";
 import { Bitmask, timeslotBitmask } from "./bitmask.js";
 import { arrayIntersection } from "./utils.js";
 
+import stc from "string-to-color";
+
 export async function createSchedules(classes) {
   //Fetches Data for All Classes
   let allClassSections = {};
@@ -33,6 +35,7 @@ export async function createSchedules(classes) {
                 ...section,
                 instructors,
                 isWeb: section.meetTimes.some(({ meetBldgCode }) => meetBldgCode == "WEB"),
+                color: stc(course.code),
                 bitmask: timeslotBitmask(section.meetTimes),
               });
             })
