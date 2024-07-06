@@ -125,7 +125,7 @@ const ClassCard = async ({
         {instructors.map((prof, i) => (
           <span key={prof.name}>
             {prof.rating ? (
-              <a className="underline" href={prof.rating.pageUrl} target="_blank">
+              <a className="link" href={prof.rating.pageUrl} target="_blank">
                 {prof.name}
               </a>
             ) : (
