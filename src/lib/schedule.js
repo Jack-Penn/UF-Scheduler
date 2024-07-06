@@ -18,8 +18,8 @@ export async function createSchedules(classes) {
         classDataResults.map(async (course) => {
           const courseData = {
             ...course,
-            sections: undefined,
           };
+          delete courseData.sections;
           await Promise.all(
             course.sections.map(async (section) => {
               const instructors = await Promise.all(
@@ -32,6 +32,7 @@ export async function createSchedules(classes) {
                 course: courseData,
                 ...section,
                 instructors,
+                isWeb: section.meetTimes.some(({ meetBldgCode }) => meetBldgCode == "WEB"),
                 bitmask: timeslotBitmask(section.meetTimes),
               });
             })
@@ -90,7 +91,7 @@ export async function createSchedules(classes) {
     .map((classes) => ({
       classes: classes.sort((class1, class2) => class2.credits - class1.credits), //sorts by credits in descending order
       credits: classes.reduce((total, section) => total + section.credits, 0),
-      bitmask: classes.reduce((total, section) => total.OR(section.bitmask), new Bitmask(55)),
+      bitmask: classes.reduce((total, section) => total.OR(section.bitmask), new Bitmask(5 * 11)),
       id: classes.reduce((total, section) => total + parseInt(section.classNumber) ** 2, 0),
     }))
     .sort((sch1, sch2) => sch2.credits - sch1.credits); //sorts by credits in descending order

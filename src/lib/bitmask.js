@@ -41,7 +41,7 @@ export class Bitmask {
 const DAY_ORDER = "MTWRF".split("").reduce((obj, dayLetter, i) => ({ ...obj, [dayLetter]: i }), {});
 
 export function timeslotBitmask(meetTimes) {
-  const bitmask = new Bitmask(55);
+  const bitmask = new Bitmask(5 * 11);
 
   meetTimes.forEach(({ meetDays, meetPeriodBegin, meetPeriodEnd }) =>
     meetDays.forEach((dayLetter) => {
