@@ -35,7 +35,6 @@ const WeekCalendar = ({ classes }) => {
   let maxPeriod = 1;
   classes.forEach((section) =>
     section.meetTimes.forEach(({ meetPeriodBegin, meetPeriodEnd }) => {
-      console.log(meetPeriodBegin, meetPeriodEnd);
       minPeriod = Math.min(minPeriod, parseInt(meetPeriodBegin));
       maxPeriod = Math.max(maxPeriod, parseInt(meetPeriodEnd));
     })

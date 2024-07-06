@@ -30,6 +30,10 @@ export async function createSchedules(classes) {
                   rating: await searchRateMyProfessor(name),
                 }))
               );
+              if (section.meetTimes.some(({ meetPeriodEnd }) => isNaN(parseInt(meetPeriodEnd)))) {
+                console.log(section);
+                return;
+              }
               allClassSections[classCode].push({
                 course: courseData,
                 ...section,
