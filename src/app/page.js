@@ -19,18 +19,18 @@ const Schedule = ({ data: { id, credits, classes } }) => {
         Schedule #{id} ({credits} credits)
       </h1>
 
-      <WeekCalendar classes={classes} />
+      <WeekCalendar classes={classes} id={id} />
 
-      {/* <div>
+      <div>
         {classes.map((classData) => (
-          <ClassCard key={`${classData.classNumber}`} data={classData} />
+          <ClassCard key={`${id}${classData.classNumber}`} data={classData} />
         ))}
-      </div> */}
+      </div>
     </div>
   );
 };
 
-const WeekCalendar = ({ classes }) => {
+const WeekCalendar = ({ classes, id }) => {
   let minPeriod = 11;
   let maxPeriod = 1;
   classes.forEach((section) =>
@@ -46,6 +46,7 @@ const WeekCalendar = ({ classes }) => {
         <div
           className="text-center bg-gray-800 row-start-1 border-gray-500 border-l-[1px] border-dashed"
           style={{ gridColumnStart: i + 2 }}
+          key={id + dayLable}
         >
           {dayLable}
         </div>
@@ -57,6 +58,7 @@ const WeekCalendar = ({ classes }) => {
           <div
             className="bg-gray-800 col-start-1 text-center align-middle flex items-center justify-center border-gray-500 border-t-[1px] border-dashed min-h-14"
             style={{ gridRowStart: i + 2 }}
+            key={`${id}${i}`}
           >
             {minPeriod + i}
           </div>
@@ -76,6 +78,7 @@ const WeekCalendar = ({ classes }) => {
                   gridRowEnd: parseInt(meetTime.meetPeriodEnd) - minPeriod + 3,
                   background: `linear-gradient(135deg, color-mix(in srgb, ${section.color} 40%, black) 10%, transparent 90%)`,
                 }}
+                key={`${id}${section.classNumber}`}
               >
                 <p>
                   <span className="font-bold">{section.course.code}</span>{" "}
