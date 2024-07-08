@@ -19,13 +19,17 @@ const Schedule = ({ data: { id, credits, classes } }) => {
         Schedule #{id} ({credits} credits)
       </h1>
 
-      <WeekCalendar classes={classes} id={id} />
-
-      <div>
-        {classes.map((classData) => (
-          <ClassCard key={`${id}${classData.classNumber}`} data={classData} />
-        ))}
-      </div>
+      <SectionTabs
+        tabs={[
+          <div>
+            {classes.map((classData) => (
+              <ClassCard key={`${id}${classData.classNumber}`} data={classData} />
+            ))}
+          </div>,
+          <WeekCalendar classes={classes} id={id} />,
+        ]}
+        tabLabels={["List", "Week"]}
+      />
     </div>
   );
 };
@@ -42,6 +46,7 @@ const WeekCalendar = ({ classes, id }) => {
   const periods = maxPeriod - minPeriod + 1;
   return (
     <div className="grid m-2 max-w-[1000px] border-gray-500 border-dashed border-r-[1px] border-b-[1px]">
+      <div className="bg-gray-800" />
       {["MON", "TUE", "WED", "THU", "FRI"].map((dayLable, i) => (
         <div
           className="text-center bg-gray-800 row-start-1 border-gray-500 border-l-[1px] border-dashed"
