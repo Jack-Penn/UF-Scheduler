@@ -15,7 +15,7 @@ export default async function Home() {
 const Schedule = ({ data: { id, credits, classes } }) => {
   return (
     <div className="m-3 p-2 bg-slate-950">
-      <h1 className="p-2 text-3xl">
+      <h1 className="py-2 text-3xl">
         Schedule #{id} ({credits} credits)
       </h1>
 
@@ -45,7 +45,7 @@ const WeekCalendar = ({ classes, id }) => {
   );
   const periods = maxPeriod - minPeriod + 1;
   return (
-    <div className="grid m-2 max-w-[1000px] border-gray-500 border-dashed border-r-[1px] border-b-[1px]">
+    <div className="grid my-2 max-w-[1000px] border-gray-500 border-dashed border-r-[1px] border-b-[1px]">
       <div className="bg-gray-800" />
       {["MON", "TUE", "WED", "THU", "FRI"].map((dayLable, i) => (
         <div
@@ -61,7 +61,7 @@ const WeekCalendar = ({ classes, id }) => {
         .fill(0)
         .map((_, i) => (
           <div
-            className="bg-gray-800 col-start-1 text-center align-middle flex items-center justify-center border-gray-500 border-t-[1px] border-dashed min-h-14"
+            className="bg-gray-800 p-2 col-start-1 text-center align-middle flex items-center justify-center border-gray-500 border-t-[1px] border-dashed min-h-14"
             style={{ gridRowStart: i + 2 }}
             key={`${id}${i}`}
           >
@@ -75,7 +75,7 @@ const WeekCalendar = ({ classes, id }) => {
           ...section.meetTimes.map((meetTime) =>
             meetTime.meetDays.map((dayLetter) => (
               <div
-                className="p-1 border-l-8"
+                className="p-2 pt-1 border-l-8"
                 style={{
                   borderLeftColor: section.color,
                   gridColumnStart: ["M", "T", "W", "R", "F"].indexOf(dayLetter) + 2,
@@ -125,7 +125,7 @@ const ClassCard = async ({
 }) => {
   return (
     <div
-      className=" p-2 m-2 rounded border-l-8"
+      className=" p-2 my-2 rounded border-l-8"
       style={{
         borderLeftColor: color,
         background: `linear-gradient(135deg, color-mix(in srgb, ${color} 40%, black) 10%, transparent 90%)`,
