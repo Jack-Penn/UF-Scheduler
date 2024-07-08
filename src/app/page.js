@@ -68,12 +68,13 @@ const WeekCalendar = ({ classes }) => {
           ...section.meetTimes.map((meetTime) =>
             meetTime.meetDays.map((dayLetter) => (
               <div
-                className=" bg-black/45 border-slate-500 p-1 border-[1px] border-l-8"
+                className="p-1 border-l-8"
                 style={{
                   borderLeftColor: section.color,
                   gridColumnStart: ["M", "T", "W", "R", "F"].indexOf(dayLetter) + 2,
                   gridRowStart: parseInt(meetTime.meetPeriodBegin) - minPeriod + 2,
                   gridRowEnd: parseInt(meetTime.meetPeriodEnd) - minPeriod + 3,
+                  background: `linear-gradient(135deg, color-mix(in srgb, ${section.color} 40%, black) 10%, transparent 90%)`,
                 }}
               >
                 <p>
@@ -115,7 +116,13 @@ const ClassCard = async ({
   },
 }) => {
   return (
-    <div className=" p-2 m-2 rounded border-slate-500 border-[1px]  border-l-8" style={{ borderLeftColor: color }}>
+    <div
+      className=" p-2 m-2 rounded border-l-8"
+      style={{
+        borderLeftColor: color,
+        background: `linear-gradient(135deg, color-mix(in srgb, ${color} 40%, black) 10%, transparent 90%)`,
+      }}
+    >
       <h1 className=" font-bold">
         {code} - {name}
       </h1>
