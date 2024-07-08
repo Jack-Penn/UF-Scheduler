@@ -10,7 +10,8 @@ const SectionTabs = ({ tabs, tabLabels }) => {
       <div className="inline-block rounded border-[1px] border-white">
         {tabLabels.map((label, i) => (
           <button
-            className={`py-1 px-4 border-x-[1px] min-w-[90px] text-center text-lg font-light border-white ${
+            key={label}
+            className={`py-1 px-4 border-x-[1px] border-dashed min-w-[90px] text-center text-lg font-light border-white ${
               tabIndex == i && "button-active"
             }`}
             onClick={() => setTabIndex(i)}

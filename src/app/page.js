@@ -1,3 +1,4 @@
+import SectionTabs from "@/components/SectionTabs";
 import { createSchedules } from "@/lib/schedule";
 
 export default async function Home() {
