@@ -24,10 +24,10 @@ const Schedule = ({ data: { id, credits, classes } }) => {
         tabs={[
           <div>
             {classes.map((classData) => (
-              <ClassCard key={`${id}${classData.classNumber}`} data={classData} />
+              <ClassCard key={classData.classNumber} data={classData} />
             ))}
           </div>,
-          <WeekCalendar classes={classes} id={id} />,
+          <WeekCalendar classes={classes} />,
         ]}
         tabLabels={["List", "Week"]}
       />
@@ -35,7 +35,7 @@ const Schedule = ({ data: { id, credits, classes } }) => {
   );
 };
 
-const WeekCalendar = ({ classes, id }) => {
+const WeekCalendar = ({ classes }) => {
   let minPeriod = 11;
   let maxPeriod = 1;
   classes.forEach((section) =>
@@ -52,7 +52,7 @@ const WeekCalendar = ({ classes, id }) => {
         <div
           className="text-center bg-gray-800 row-start-1 border-gray-500 border-l-[1px] border-dashed"
           style={{ gridColumnStart: i + 2 }}
-          key={id + dayLable}
+          key={dayLable}
         >
           {dayLable}
         </div>
@@ -64,7 +64,7 @@ const WeekCalendar = ({ classes, id }) => {
           <div
             className="bg-gray-800 p-2 col-start-1 text-center align-middle flex items-center justify-center border-gray-500 border-t-[1px] border-dashed min-h-14"
             style={{ gridRowStart: i + 2 }}
-            key={`${id}${i}`}
+            key={i}
           >
             {minPeriod + i}
           </div>
@@ -84,7 +84,7 @@ const WeekCalendar = ({ classes, id }) => {
                   gridRowEnd: parseInt(meetTime.meetPeriodEnd) - minPeriod + 3,
                   background: `linear-gradient(135deg, color-mix(in srgb, ${section.color} 40%, black) 10%, transparent 90%)`,
                 }}
-                key={`${id}${section.classNumber}`}
+                key={section.classNumber}
               >
                 <p>
                   <span className="font-bold">{section.course.code}</span>{" "}
@@ -152,8 +152,8 @@ const ClassCard = async ({
       </p>
       <p>Credits: {credits}</p>
       <div className="mt-2">
-        {meetTimes.map(({ meetDays, meetPeriodBegin, meetPeriodEnd }) => (
-          <p key={meetDays.join("") + meetPeriodBegin + meetPeriodEnd}>
+        {meetTimes.map(({ meetNo, meetDays, meetPeriodBegin, meetPeriodEnd }) => (
+          <p key={meetNo}>
             {meetDays.join(",")} |{" "}
             {meetPeriodBegin === meetPeriodEnd
               ? `Period ${meetPeriodBegin}`
