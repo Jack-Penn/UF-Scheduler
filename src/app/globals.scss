@@ -21,6 +21,12 @@ body {
   background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }
 
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
 .link {
   text-decoration: none;
   position: relative;
@@ -44,8 +50,26 @@ body {
   color: black;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+.form-label {
+  &.active {
+    top: -10px;
+    left: 12px;
+    font-size: 0.75rem /* 12px */;
+    line-height: 1rem /* 16px */;
+    font-weight: 200;
+    padding-left: 4px;
+    padding-right: 4px;
   }
+  &.unactive {
+    top: 0;
+    left: 0;
+    margin: 8px;
+    padding: 0;
+    .required & {
+      color: red;
+    }
+  }
+}
+.required:has(> .form-label.unactive) {
+  border-color: red;
 }
