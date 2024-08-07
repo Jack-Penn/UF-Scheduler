@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useRef } from "react";
 
 interface Option {
   value: string;
@@ -13,28 +13,29 @@ interface FormDropdownProps {
   required?: boolean;
 }
 
-const FormDropdown: React.FC<FormDropdownProps> = ({ label, onChange, control, options, required = false }) => {
-  // const [value, setValue] = useState<string>(defaultOptionIndex !== undefined ? options[defaultOptionIndex].value : "");
-  const [isActive, setIsActive] = useState<boolean>(control != undefined);
+const FormDropdown: React.FC<FormDropdownProps> = ({
+  label,
+  onChange,
+  control,
+  options,
+  required = false,
+}) => {
+  const isActive = useRef(control != undefined);
+  // console.log("Form Dropdown", isActive.current);
 
   return (
-    <div className={`bg-black border-[1px] rounded relative mt-3 pr-2 w-80 ${required ? "required" : ""}`}>
-      <label className={`absolute bg-black form-label text-gray-300 ${isActive ? "active" : "unactive"}`}>
+    <div
+      className={`relative mt-3 w-80 rounded border-[1px] bg-black pr-2 ${required ? "required" : ""}`}
+    >
+      <label
+        className={`form-label absolute bg-black text-gray-300 ${isActive.current ? "active" : "unactive"}`}
+      >
         {label + (required ? " *" : "")}
       </label>
       <select
-        className="bg-black pl-2 py-2 rounded select-none w-full outline-none z-10"
+        className="z-10 w-full select-none rounded bg-black py-2 pl-2 outline-none"
         defaultValue={control}
-        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-          setIsActive(event.target.value !== "");
-          onChange(event);
-        }}
-        onFocus={() => {
-          setIsActive(true);
-        }}
-        onBlur={() => {
-          if (control === "") setIsActive(false);
-        }}
+        onChange={onChange}
       >
         <option value=""></option>
         {options.map(({ value, text }) => (

@@ -6,7 +6,7 @@ type Props = {
 export const InstructorsList = ({ instructors }: Props) => {
   return (
     <p>
-      {`Instructor${instructors.length > 0 ? "s" : ""}: `}
+      {`Instructor${instructors.length > 1 ? "s" : ""}: `}
       {instructors.length == 0
         ? "STAFF"
         : instructors

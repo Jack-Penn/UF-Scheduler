@@ -9,7 +9,7 @@ type SearchClassesFormProps = {
   filters: ClassFilterData;
 };
 
-const SearchClassesForm: React.FC<SearchClassesFormProps> = ({ filters }) => {
+const SearchClasses: React.FC<SearchClassesFormProps> = ({ filters }) => {
   function filterToOptions(filter: { CODE: string; DESC: string }[]) {
     return filter.map(({ CODE, DESC }) => ({ value: CODE, text: DESC }));
   }
@@ -19,7 +19,13 @@ const SearchClassesForm: React.FC<SearchClassesFormProps> = ({ filters }) => {
       <SearchClassesInput
         urlParam="term"
         input={
-          <FormDropdown label="Term" options={filterToOptions(filters.terms)} control="" onChange={() => {}} required />
+          <FormDropdown
+            label="Term"
+            options={filterToOptions(filters.terms)}
+            control=""
+            onChange={() => {}}
+            required
+          />
         }
       />
       <SearchClassesInput
@@ -36,24 +42,50 @@ const SearchClassesForm: React.FC<SearchClassesFormProps> = ({ filters }) => {
       />
       <SearchClassesInput
         urlParam="course-code"
-        input={<FormInput label="Course #" helper="Example: MAC3474" control="" onChange={() => {}} />}
+        input={
+          <FormInput
+            label="Course #"
+            helper="Example: MAC3474"
+            control=""
+            onChange={() => {}}
+          />
+        }
       />
       <SearchClassesInput
         urlParam="class-num"
-        input={<FormInput label="Class #" helper="Example: 15110" control="" onChange={() => {}} />}
+        input={
+          <FormInput
+            label="Class #"
+            helper="Example: 15110"
+            control=""
+            onChange={() => {}}
+          />
+        }
       />
       <SearchClassesInput
         urlParam="course-title"
         input={
-          <FormInput label="Course Title" helper="Part or all of Title or Keyword" control="" onChange={() => {}} />
+          <FormInput
+            label="Course Title"
+            helper="Part or all of Title or Keyword"
+            control=""
+            onChange={() => {}}
+          />
         }
       />
       <SearchClassesInput
         urlParam="instructor"
-        input={<FormInput label="Instructor" helper="Instructor Last Name" control="" onChange={() => {}} />}
+        input={
+          <FormInput
+            label="Instructor"
+            helper="Instructor Last Name"
+            control=""
+            onChange={() => {}}
+          />
+        }
       />
     </div>
   );
 };
 
-export default SearchClassesForm;
+export default SearchClasses;

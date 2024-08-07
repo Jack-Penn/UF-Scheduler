@@ -100,11 +100,11 @@ export function createSchedules(classes: Section[][]): Schedule[] {
 
 //Queries UF schedule of courses based on search parameters
 export type ClassSearchParams = {
-  category?: Programs;
+  category: Programs;
   "course-code"?: string;
   "course-title"?: string;
   "class-num"?: number | string;
-  term?: number | string;
+  term: number | string;
   instructor?: string;
   hons?: boolean;
 };

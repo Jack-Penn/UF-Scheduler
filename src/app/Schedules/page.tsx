@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import ScheduleCard from "./ScheduleCard";
 
-type HomePageProps = {
+type PageProps = {
   searchParams: {
     "section-groups"?: string;
     "required-sections"?: string;
@@ -13,9 +13,12 @@ type HomePageProps = {
   };
 };
 
-// http://localhost:3001/?section-groups=[[14391,14393,14394],[11812,11813]]
-export default async function Home({ searchParams }: HomePageProps) {
+// http://localhost:3000/Schedules?section-groups=%5B%5B14622%5D%2C%5B28425%5D%2C%5B11578%5D%2C%5B12714%5D%2C%5B13926%5D%5D&term=2248&category=CWSP
+export default async function Page({ searchParams }: PageProps) {
   if (searchParams?.["section-groups"]) {
+    searchParams.term ??= (await getLatestTerm()).CODE;
+    searchParams.program ??= "CWSP";
+
     //Retrieves all Class Section data
     //TODO: use cookies/caching for data
     const sectionGroups: number[][] = JSON.parse(
@@ -27,8 +30,8 @@ export default async function Home({ searchParams }: HomePageProps) {
           sectionGroup.map(async (classNum) => {
             const [{ sections }] = await searchClasses({
               "class-num": classNum,
-              category: (searchParams.program as Programs) ?? "CWSP",
-              term: searchParams.term ?? (await getLatestTerm()).CODE,
+              category: searchParams.program as Programs,
+              term: searchParams.term as string,
             });
             return sections[0];
           }),
@@ -55,9 +58,23 @@ export default async function Home({ searchParams }: HomePageProps) {
       });
     }
 
+    const searchClassesQueryParams = new URLSearchParams({
+      sections: searchParams["section-groups"],
+      term: `${searchParams.term}`,
+      category: searchParams.program,
+    });
+
     return (
       <>
-        <h1>{schedules.length} Generated Scheduels</h1>
+        <h1 className="text-xl">
+          {schedules.length} Matching Schedule{schedules.length > 1 ? "s" : ""}
+        </h1>
+        <Link
+          className="link"
+          href={`/SearchClasses?${searchClassesQueryParams.toString()}`}
+        >
+          Add More Classes
+        </Link>
         {schedules.map((scheduleData) => (
           <ScheduleCard schedule={scheduleData} key={scheduleData.id} />
         ))}
@@ -69,7 +86,7 @@ export default async function Home({ searchParams }: HomePageProps) {
         <h1>
           There are no class sections specified in the URL. Try adding classes
           from the{" "}
-          <Link className="link" href="/SearchClasses">
+          <Link className="link" href="/SearchClasses${}">
             /SearchClasses Page
           </Link>
         </h1>

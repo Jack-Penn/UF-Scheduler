@@ -1,4 +1,5 @@
 import { InstructorsList } from "@/components/InstructorsList";
+import MeetTimesList from "@/components/MeetTimesList";
 import { Section } from "@/lib/definitions";
 
 type Props = {
@@ -20,16 +21,7 @@ const SectionCard = ({ section }: Props) => {
       <InstructorsList instructors={section.instructors} />
       <p>Credits: {section.credits}</p>
       <div className="mt-2">
-        {section.meetTimes.map(
-          ({ meetNo, meetDays, meetPeriodBegin, meetPeriodEnd }) => (
-            <p key={meetNo}>
-              {meetDays.join(",")} |{" "}
-              {meetPeriodBegin === meetPeriodEnd
-                ? `Period ${meetPeriodBegin}`
-                : `Periods ${meetPeriodBegin}-${meetPeriodEnd}`}
-            </p>
-          ),
-        )}
+        <MeetTimesList meetTimes={section.meetTimes} />
       </div>
     </div>
   );
